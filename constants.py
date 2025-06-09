@@ -14,3 +14,10 @@ SCREEN_GRID_Y = 8
 SPRITE_SIZE = 16
 FPS = 60
 SPRITE_MOVEMENT_SPEED = 1
+
+# button state
+button_state = {"button_up": "up",
+"button_just_pressed": "just pressed",
+"button_still_pressed": "stil pressed",
+"button_released": "released"
+}
