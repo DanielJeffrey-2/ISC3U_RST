@@ -25,22 +25,25 @@ def game_scene() -> None:
     select_button = constants.button_state["button_up"]
     
     #sound
-    pew_sound = open("pew.wav", 'rb')
+    pew_sound = open("pew.wav", "rb")
     sound = ugame.audio
     sound.stop()
     sound.mute(False)
     
     # putting background on screen
-    background = stage.Grid(image_bank_background, constants.SCREEN_GRID_X, constants.SCREEN_GRID_X)
+    background = stage.Grid(image_bank_background, constants.SCREEN_GRID_X, constants.SCREEN_GRID_Y)
     
     ship = stage.Sprite(image_bank_sprites, 5, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE))
     
-    alien = stage.Sprite(image_bank_sprites, 9,
-                    int(constants.SCREEN_X / 2 - constants.SPRITE_SIZE / 2),
-                    16)
+    alien = stage.Sprite(
+        image_bank_sprites,
+        9,
+        int(constants.SCREEN_X / 2 - constants.SPRITE_SIZE / 2),
+        16,
+    )
     
     game = stage.Stage(ugame.display, constants.FPS)
-    game.layers = [ship] + [alien] [background]
+    game.layers = [ship] + [alien] + [background]
     game.render_block()
     
     while True:
@@ -86,7 +89,7 @@ def game_scene() -> None:
             pass
         
         # update game logic
-        if a_button == constants.button_state["button_just_pressed"]
+        if a_button == constants.button_state["button_just_pressed"]:
             sound.play(pew_sound)
 
         # redraw sprites
@@ -95,3 +98,4 @@ def game_scene() -> None:
 
 if __name__ == "__main__":
     game_scene()
+    
