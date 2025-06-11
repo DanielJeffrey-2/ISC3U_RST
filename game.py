@@ -119,6 +119,15 @@ def menu_scene() -> None:
 def game_scene() -> None:
     """ This function is the main game game_scene """
     
+    def show_alien():
+        # this function places an alien on screen
+        for alien_number in range(len(aliens)):
+            if aliens[alien_number].x < 0
+                aliens[alien_number].move(random.randint(0 
+            
+
+
+
     image_bank_background = stage.Bank.from_bmp16("space_aliens_background.bmp")
     image_bank_sprites = stage.Bank.from_bmp16("space_aliens.bmp")
     
@@ -144,12 +153,15 @@ def game_scene() -> None:
     
     ship = stage.Sprite(image_bank_sprites, 5, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE))
     
-    alien = stage.Sprite(
-        image_bank_sprites,
-        9,
-        int(constants.SCREEN_X / 2 - constants.SPRITE_SIZE / 2),
-        16,
-    )
+    # create list of aliens
+    aliens = []
+    for alien_number in range(constants.TOTAL_NUMBER_OF_ALIENS):
+        a_single_alien = stage.Sprite(image_bank_sprites, 9,
+                                    constants.OFF_SCREEN_X,
+                                    constants.OFF_SCREEN_Y)
+        aliens.append(a_single_alien)
+    
+    show_alien()
     
     #create list of lasers
     lasers = []
