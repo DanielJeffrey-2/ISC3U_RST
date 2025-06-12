@@ -243,11 +243,11 @@ def game_scene() -> None:
         for alien_number in range(len(aliens)):
             if aliens[alien_number].x > 0:
                 aliens[alien_number].move(aliens[alien_number].x,
-                                            lasers[laser_number].y +
+                                            aliens[alien_number].y +
                                             constants.ALIEN_SPEED)
                 # if alien not on screen, move to offscreen location
-                if aliens[alien_number].y < constants.SCREEN_Y:
-                    lasers[laser_number].move(constants.OFF_SCREEN_X,
+                if aliens[alien_number].y > constants.SCREEN_Y:
+                    aliens[alien_number].move(constants.OFF_SCREEN_X,
                                                 constants.OFF_SCREEN_Y)
                     show_alien()
         
