@@ -3,7 +3,7 @@
 """
 Created by: D. Jeffrey
 Created on: June 2025
-This module is a TRON clone
+This module is a duck hunt clone
 """
 
 import stage
@@ -49,7 +49,7 @@ def splash_scene() -> None:
         game.tick()
         
 def menu_scene() -> None:
-    """ This function is the main game game_scene """
+    """ This function is the main menu  """
     
     image_bank_mt_background = stage.Bank.from_bmp16("mt_game_studio.bmp")
 
@@ -112,10 +112,84 @@ def menu_scene() -> None:
         keys = ugame.buttons.get_pressed()
 
         if keys & ugame.K_START != 0:
-            game_scene()
+            bug_hunt_menu_scene()
 
         # redraw sprites
         game.tick()
+
+def bug_hunt_menu_scene() -> None:
+    """ This function is the second menu screen for bug hunt """
+    
+    image_bank_mt_background = stage.Bank.from_bmp16("mt_game_studio.bmp")
+
+    text = []
+    text1 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
+    text1.move(50,10)
+    text1.text("BUG HUNT")
+    text.append(text1)
+
+    text2 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
+    text2.move(35,30)
+    text2.text("PRESS SELECT")
+    text.append(text2)
+    
+    
+    text3 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
+    text3.move(45,95)
+    text3.text("PRESS 'A'")
+    text.append(text3)
+    
+    
+    text4 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
+    text4.move(35,105)
+    text4.text("FOR CREDITS")
+    text.append(text4)
+    
+    # putting background on screen
+    background = stage.Grid(image_bank_mt_background, constants.SCREEN_X,
+                            constants.SCREEN_Y)
+   
+    game = stage.Stage(ugame.display, constants.FPS)
+
+    game.layers = text + [background]
+
+    game.render_block()
+    
+    game = stage.Stage(ugame.display, constants.FPS)
+    game.layers = text + [background]
+    game.render_block()
+    
+    while True:
+        # get user input
+        keys = ugame.buttons.get_pressed()
+
+        if keys & ugame.K_SELECT != 0:
+            game_scene()
+            
+        if keys & ugame.K_0 != 0:
+            credits()
+
+        # redraw sprites
+        game.tick()
+
+
+def credits
+    """ """
+    
+    game = stage.Stage(ugame.display, constants.FPS)
+    game.layers = text + [background]
+    game.render_block()
+    
+    while True:
+        keys = ugame.buttons.get_pressed()
+        
+        if keys & ugame.K_SELECT != 0:
+            supervisor.reload()
+
+
+        game.tick()
+
+
 
 
 def game_scene() -> None:
