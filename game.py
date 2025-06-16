@@ -205,13 +205,13 @@ def game_scene() -> None:
     score_text.text("Score: {0}".format(score))
     
 
-    def show_alien():
+    def show_bug():
         """ This function places an alien on the screen """
-        for alien_number in range(len(aliens)):
-            if aliens[alien_number].x < 0:
-                aliens[alien_number].move(random.randint(0 + constants.SPRITE_SIZE,
+        for bug_number in range(len(bugs)):
+            if bug[bug_number].x < 0:
+                bug[bug_number].move(random.randint(0 + constants.SPRITE_SIZE,
                                         constants.SCREEN_X - constants.SPRITE_SIZE),
-                                        constants.OFF_TOP_SCREEN)
+                                        constants.OFF_BOTTOM_SCREEN)
                 break
 
     score = 0
@@ -241,29 +241,29 @@ def game_scene() -> None:
             tile_picked = random.randint(1,3)
             background.tile(x_location, y_locaiton, tile_picked)"""
     
-    ship = stage.Sprite(image_bank_sprites, 5, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE))
+    scope = stage.Sprite(image_bank_sprites, 5, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE))
     
     # create list of aliens
-    aliens = []
-    for alien_number in range(constants.TOTAL_NUMBER_OF_ALIENS):
-        a_single_alien = stage.Sprite(image_bank_sprites, 9,
+    bugs = []
+    for bug_number in range(constants.TOTAL_NUMBER_OF_BUGS):
+        a_single_bug = stage.Sprite(image_bank_sprites, 9,
                                     constants.OFF_SCREEN_X,
                                     constants.OFF_SCREEN_Y)
-        aliens.append(a_single_alien)
+        bugs.append(a_single_bug)
     
-    show_alien()
+    show_bug()
     
-    #create list of lasers
-    lasers = []
+    """ #create list of lasers
+    shots = []
     for laser_number in range(constants.TOTAL_NUMBER_OF_LASERS):
-        a_single_laser = stage.Sprite(image_bank_sprites, 10,
+        a_single_shot = stage.Sprite(image_bank_sprites, 10,
                                     constants.OFF_SCREEN_X,
                                     constants.OFF_SCREEN_Y)
-        lasers.append(a_single_laser)
-    
+        shots.append(a_single_shot)
+    """
     # create stage background, load layers
     game = stage.Stage(ugame.display, constants.FPS)
-    game.layers = [score_text] + aliens + lasers + [ship] + [background]
+    game.layers = [score_text] + bugs + shots + [scope] + [background]
     game.render_block()
     
     while True:
@@ -291,16 +291,16 @@ def game_scene() -> None:
             pass
         
         if keys & ugame.K_RIGHT:
-            if ship.x <= constants.SCREEN_X - constants.SPRITE_SIZE:
-                ship.move(ship.x + constants.SPRITE_MOVEMENT_SPEED, ship.y)
+            if scope.x <= constants.SCREEN_X - constants.SPRITE_SIZE:
+                scope.move(scope.x + constants.SPRITE_MOVEMENT_SPEED, scope.y)
             else:
-                ship.move(constants.SCREEN_X - constants.SPRITE_SIZE, ship.y)
+                scope.move(constants.SCREEN_X - constants.SPRITE_SIZE, scope.y)
         
         if keys & ugame.K_LEFT:
-            if ship.x >= 0: 
-                ship.move(ship.x - constants.SPRITE_MOVEMENT_SPEED, ship.y)
+            if scope.x >= 0: 
+                scope.move(scope.x - constants.SPRITE_MOVEMENT_SPEED, scope.y)
             else:
-                ship.move(0, ship.y)
+                scope.move(0, scope.y)
                 
         if keys & ugame.K_UP:
             pass
@@ -328,16 +328,22 @@ def game_scene() -> None:
                     lasers[laser_number].move(constants.OFF_SCREEN_X,
                                                 constants.OFF_SCREEN_Y)
                                             
-        for alien_number in range(len(aliens)):
-            if aliens[alien_number].x > 0:
-                aliens[alien_number].move(aliens[alien_number].x,
-                                            aliens[alien_number].y +
-                                            constants.ALIEN_SPEED)
+        for bug_number in range(len(bugs)):
+            if bugs[bug_number].x > 0:
+                if bugs[bug_number].x > 80
+                    bugs[bug_number].move(bugs[bug_number].x - random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX
+                                                bugs[bug_number].y +
+                                                random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX)
+                else:
+                    bugs[bug_number].move(bugs[bug_number].x + random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX
+                                                bugs[bug_number].y +
+                                                random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX)
+            
                 # if alien not on screen, move to offscreen location
-                if aliens[alien_number].y > constants.SCREEN_Y:
-                    aliens[alien_number].move(constants.OFF_SCREEN_X,
+                if bugs[bug_number].y > constants.SCREEN_Y:
+                    bugs[bug_number].move(constants.OFF_SCREEN_X,
                                                 constants.OFF_SCREEN_Y)
-                    show_alien()
+                    show_bug()
                     score -= 1
                     if score < 0:
                         score = 0
@@ -346,27 +352,27 @@ def game_scene() -> None:
                     score_text.move(1,1)
                     score_text.text("Score: {0}".format(score))
         
-        for laser_number in range(len(lasers)):
-            if lasers[laser_number].x > 0:
-                for alien_number in range(len(aliens)):
-                    if aliens[alien_number].x > 0:
-                        if stage.collide(lasers[laser_number].x + 6, lasers[laser_number].y + 2,
-                                        lasers[laser_number].x + 11, lasers[laser_number].y + 12,
-                                        aliens[alien_number].x + 1, aliens[alien_number].y,
-                                        aliens[alien_number].x + 15, aliens[alien_number].y + 15):
-                            aliens[alien_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
-                            lasers[laser_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
+        for shot_number in range(len(shots)):
+            if show[shot_number].x > 0:
+                for bug_number in range(len(bugs)):
+                    if bugs[bug_number].x > 0:
+                        if stage.collide(shots[shot_number].x, shots[shot_number].y,
+                                        shots[shot_number].x + 16, shots[shot_number].y + 16,
+                                        bugs[bug_number].x + 1, bugs[bug_number].y,
+                                        bugs[bug_number].x + 15, bugs[bug_number].y + 15):
+                            bugs[bug_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
+                            shots[shot_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
                             sound.stop()
                             sound.play(boom_sound)
-                            show_alien()
-                            show_alien()
+                            show_bug()
+                            show_bug()
                             score += 1
                             score_text.clear()
                             score_text.cursor(0,0)
                             score_text.move(1,1)
                             score_text.text("Score: {0}".format(score))
 
-        for alien_number in range(len(aliens)):
+        """ for alien_number in range(len(aliens)):
             if aliens[alien_number].x > 0:
                 if stage.collide(aliens[alien_number].x + 1, aliens[alien_number].y,
                                 aliens[alien_number].x + 15, aliens[alien_number].y + 15,
@@ -377,7 +383,7 @@ def game_scene() -> None:
                     sound.play(crash_sound)
                     time.sleep(3.0)
                     game_over_scene(score)
-                    
+                    """
 
         
         # redraw sprites
