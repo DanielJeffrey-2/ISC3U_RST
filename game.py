@@ -192,8 +192,8 @@ def game_scene() -> None:
     select_button = constants.button_state["button_up"]
     
     #sound
-    gunshot_sound = open("gun-gunshot-01.wav", 'rb')
-    shell_sound = open("gun-gunshot-01.wav", 'rb')
+    #gunshot_sound = open("gun-gunshot-01.wav", 'rb')
+    #shell_sound = open("gun-gunshot-01.wav", 'rb')
     crash_sound = open("crash.wav", 'rb')
     sound = ugame.audio
     sound.stop()
@@ -269,7 +269,10 @@ def game_scene() -> None:
                 scope.move(0, scope.y)
                 
         if keys & ugame.K_UP:
-            pass
+            if scope.x >= 0: 
+                scope.move(scope.x, scope.y - constants.SPRITE_MOVEMENT_SPEED)
+            else:
+                scope.move(scope.x, constants.SCREEN_Y - constants.SPRITE_SIZE)
             
         if keys & ugame.K_DOWN:
             pass
@@ -280,9 +283,9 @@ def game_scene() -> None:
             for shot_number in range(len(shots)):
                 if shots[shot_number].x < 0:
                     shots[shot_number].move(ship.x, ship.y)
-                    sound.play(gun_sound)
+                    #sound.play(gun_sound)
                     time.sleep(0.5)
-                    sound.play(shell_sound)
+                    #sound.play(shell_sound)
                     break
         
         # checks if laser is on screen, then moves it up by laser_speed
@@ -296,16 +299,15 @@ def game_scene() -> None:
         for bug_number in range(len(bugs)):
             if bugs[bug_number].x > 0:
                 if bugs[bug_number].x > 80:
-                    bugs[bug_number].move(bugs[bug_number].x - random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX),
-                                        bugs[bug_number].y + random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX))
+                    bugs[bug_number].move(bugs[bug_number].x - random.choice(constants.BUG_SPEED_LIST),
+                                        bugs[bug_number].y + random.choice(constants.BUG_SPEED_LIST))
                 else:
-                    bugs[bug_number].move(bugs[bug_number].x + random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX),
-                                                bugs[bug_number].y + random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX))
+                    bugs[bug_number].move(bugs[bug_number].x + random.choice(constants.BUG_SPEED_LIST),
+                                                bugs[bug_number].y + random.choice(constants.BUG_SPEED_LIST))
             
                 # if alien not on screen, move to offscreen location
                 if bugs[bug_number].y > constants.SCREEN_Y:
-                    bugs[bug_number].move(constants.OFF_SCREEN_X,
-                                                constants.OFF_SCREEN_Y)
+                    bugs[bug_number].move(constants.OFF_SCREEN_X,constants.OFF_SCREEN_Y)
                     show_bug()
                     score -= 1
                     if score < 0:
@@ -316,7 +318,7 @@ def game_scene() -> None:
                     score_text.text("Score: {0}".format(score))
         
         for shot_number in range(len(shots)):
-            if show[shot_number].x > 0:
+            if shots[shot_number].x > 0:
                 for bug_number in range(len(bugs)):
                     if bugs[bug_number].x > 0:
                         if stage.collide(shots[shot_number].x, shots[shot_number].y,
@@ -326,7 +328,7 @@ def game_scene() -> None:
                             bugs[bug_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
                             shots[shot_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
                             sound.stop()
-                            sound.play(boom_sound)
+                            #sound.play(boom_sound)
                             show_bug()
                             show_bug()
                             score += 1
