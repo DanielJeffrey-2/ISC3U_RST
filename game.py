@@ -133,7 +133,7 @@ def bug_hunt_menu_scene() -> None:
         if keys & ugame.K_SELECT != 0:
             game_scene()
             
-        if keys & ugame.K_0 != 0:
+        if keys & ugame.K_O != 0:
             credits()
 
         # redraw sprites
@@ -295,12 +295,12 @@ def game_scene() -> None:
                                             
         for bug_number in range(len(bugs)):
             if bugs[bug_number].x > 0:
-                if bugs[bug_number].x > 80
+                if bugs[bug_number].x > 80:
                     bugs[bug_number].move(bugs[bug_number].x - random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX),
                                         bugs[bug_number].y + random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX))
                 else:
                     bugs[bug_number].move(bugs[bug_number].x + random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX),
-                                        bugs[bug_number].y + random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX))
+                                                bugs[bug_number].y + random.random(constants.BUG_SPEED_MIN, constants.BUG_SPEED_MAX))
             
                 # if alien not on screen, move to offscreen location
                 if bugs[bug_number].y > constants.SCREEN_Y:
