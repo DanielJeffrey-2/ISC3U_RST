@@ -192,8 +192,8 @@ def game_scene() -> None:
     select_button = constants.button_state["button_up"]
     
     #sound
-    gunshot_sound = open("gun-gunshot.wav", 'rb')
-    shell_sound = open("bullet-fall.wav", 'rb')
+    gunshot_sound = open("gun-gunshot-01.wav", 'rb')
+    shell_sound = open("gun-gunshot-01.wav", 'rb')
     crash_sound = open("crash.wav", 'rb')
     sound = ugame.audio
     sound.stop()
