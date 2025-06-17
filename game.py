@@ -174,8 +174,8 @@ def game_scene() -> None:
     def show_bug():
         """ This function places an alien on the screen """
         for bug_number in range(len(bugs)):
-            if bug[bug_number].x < 0:
-                bug[bug_number].move(random.randint(0 + constants.SPRITE_SIZE,
+            if bugs[bug_number].x < 0:
+                bugs[bug_number].move(random.randint(0 + constants.SPRITE_SIZE,
                                         constants.SCREEN_X - constants.SPRITE_SIZE),
                                         constants.OFF_BOTTOM_SCREEN)
                 break
@@ -211,7 +211,7 @@ def game_scene() -> None:
     
     # create list of aliens
     bugs = []
-    for bug_number in range(constants.TOTAL_NUMBER_OF_BUGS):
+    for bug_number in range(constants.TOTAL_NUMBER_OF_SHOTS):
         a_single_bug = stage.Sprite(image_bank_sprites, 9,
                                     constants.OFF_SCREEN_X,
                                     constants.OFF_SCREEN_Y)
@@ -221,7 +221,7 @@ def game_scene() -> None:
     
     
     shots = []
-    for shot_number in range(constants.TOTAL_NUMBER_OF_LASERS):
+    for shot_number in range(constants.TOTAL_NUMBER_OF_SHOTS):
         a_single_shot = stage.Sprite(image_bank_sprites, 10,
                                     constants.OFF_SCREEN_X,
                                     constants.OFF_SCREEN_Y)
