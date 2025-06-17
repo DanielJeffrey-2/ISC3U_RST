@@ -14,40 +14,7 @@ import supervisor
 
 import constants
 
-
-def splash_scene() -> None:
-    """ This function is the splash scene """
-
-
-    coin_sound = open("coin.wav", 'rb')
-    boom_sound = open("boom.wav", 'rb')
-    sound = ugame.audio
-    sound.stop()
-    sound.mute(False)
-    sound.play(coin_sound)
-
-
-    while True:
-
-        keys = ugame.buttons.get_pressed()
-
-        if keys & ugame.K_START != 0:
-            game_scene()
-
-        game.tick()
-    
-    game = stage.Stage(ugame.display, constants.FPS)
-    game.layers = [background]
-    game.render_block()
-    
-    while True:
-        # get user input
-        time.sleep(1.0)
-        menu_scene()
-
-        # redraw sprites
-        game.tick()
-        
+ 
 def menu_scene() -> None:
     """ This function is the main menu  """
     
@@ -174,7 +141,7 @@ def bug_hunt_menu_scene() -> None:
 
 
 def credits
-    """ """
+    """ This function prints the credits """
     
     game = stage.Stage(ugame.display, constants.FPS)
     game.layers = text + [background]
@@ -226,8 +193,8 @@ def game_scene() -> None:
     select_button = constants.button_state["button_up"]
     
     #sound
-    pew_sound = open("pew.wav", 'rb')
-    boom_sound = open("boom.wav", 'rb')
+    gunshot_sound = open("gun-gunshot.wav", 'rb')
+    shell_sound = open("bullet-fall.wav", 'rb')
     crash_sound = open("crash.wav", 'rb')
     sound = ugame.audio
     sound.stop()
@@ -253,14 +220,14 @@ def game_scene() -> None:
     
     show_bug()
     
-    """ #create list of lasers
+    
     shots = []
-    for laser_number in range(constants.TOTAL_NUMBER_OF_LASERS):
+    for shot_number in range(constants.TOTAL_NUMBER_OF_LASERS):
         a_single_shot = stage.Sprite(image_bank_sprites, 10,
                                     constants.OFF_SCREEN_X,
                                     constants.OFF_SCREEN_Y)
         shots.append(a_single_shot)
-    """
+
     # create stage background, load layers
     game = stage.Stage(ugame.display, constants.FPS)
     game.layers = [score_text] + bugs + shots + [scope] + [background]
@@ -311,22 +278,18 @@ def game_scene() -> None:
         # update game logic
         if a_button == constants.button_state["button_just_pressed"]:
             # fire laser if still less than 75
-            for laser_number in range(len(lasers)):
-                if lasers[laser_number].x < 0:
-                    lasers[laser_number].move(ship.x, ship.y)
-                    sound.play(pew_sound)
+            for shot_number in range(len(shots)):
+                if shots[shot_number].x < 0:
+                    shots[shot_number].move(ship.x, ship.y)
+                    sound.play(gun_sound)
                     break
         
         # checks if laser is on screen, then moves it up by laser_speed
-        for laser_number in range(len(lasers)):
-            if lasers[laser_number].x > 0:
-                lasers[laser_number].move(lasers[laser_number].x,
-                                            lasers[laser_number].y -
-                                            constants.LASER_SPEED)
-                # if laser not on screen, move to offscreen location
-                if lasers[laser_number].y < constants.OFF_TOP_SCREEN:
-                    lasers[laser_number].move(constants.OFF_SCREEN_X,
-                                                constants.OFF_SCREEN_Y)
+        for shot_number in range(len(shots)):
+            if shots[shot_number].x > 0:
+                time.sleep(0.50)
+                shots[shot_number].move(constants.OFF_SCREEN_X,
+                                            constants.OFF_SCREEN_Y)
                                             
         for bug_number in range(len(bugs)):
             if bugs[bug_number].x > 0:
@@ -387,7 +350,7 @@ def game_scene() -> None:
 
         
         # redraw sprites
-        game.render_sprites(aliens + lasers + [ship])
+        game.render_sprites(bugs + shots + [cursor])
         game.tick()
 
 def game_over_scene(final_score):
