@@ -140,8 +140,8 @@ def bug_hunt_menu_scene() -> None:
         game.tick()
 
 
-def credits
-    """ this function prints the credits """
+def credits() -> None:
+    """this function prints the credits"""
 
     image_bank_mt_background = stage.Bank.from_bmp16("mt_game_studio.bmp")
 
@@ -200,12 +200,13 @@ def game_scene() -> None:
                 bugs[bug_number].move(random.randint(0 + constants.SPRITE_SIZE,
                                         constants.SCREEN_X - constants.SPRITE_SIZE),
                                         constants.OFF_BOTTOM_SCREEN)
+            
                 break
 
     score = 0
 
     image_bank_background = stage.Bank.from_bmp16("space_aliens_background.bmp")
-    image_bank_sprites = stage.Bank.from_bmp16("space_aliens.bmp")
+    image_bank_sprites = stage.Bank.from_bmp16("bug_hunt_sprites.bmp")
     
     # buttons to keep state information on
     a_button = constants.button_state["button_up"]
@@ -229,12 +230,12 @@ def game_scene() -> None:
             tile_picked = random.randint(1,3)
             background.tile(x_location, y_locaiton, tile_picked)"""
     
-    scope = stage.Sprite(image_bank_sprites, 5, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE))
+    scope = stage.Sprite(image_bank_sprites, 2, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE))
     
     # create list of aliens
     bugs = []
-    for bug_number in range(constants.TOTAL_NUMBER_OF_SHOTS):
-        a_single_bug = stage.Sprite(image_bank_sprites, 9,
+    for bug_number in range(constants.TOTAL_NUMBER_OF_BUGS):
+        a_single_bug = stage.Sprite(image_bank_sprites, 1,
                                     constants.OFF_SCREEN_X,
                                     constants.OFF_SCREEN_Y)
         bugs.append(a_single_bug)
@@ -244,7 +245,7 @@ def game_scene() -> None:
     
     shots = []
     for shot_number in range(constants.TOTAL_NUMBER_OF_SHOTS):
-        a_single_shot = stage.Sprite(image_bank_sprites, 10,
+        a_single_shot = stage.Sprite(image_bank_sprites, 5,
                                     constants.OFF_SCREEN_X,
                                     constants.OFF_SCREEN_Y)
         shots.append(a_single_shot)
@@ -291,7 +292,7 @@ def game_scene() -> None:
                 scope.move(0, scope.y)
                 
         if keys & ugame.K_UP:
-            if scope.x > 0: 
+            if scope.y > 0: 
                 scope.move(scope.x, scope.y - constants.SPRITE_MOVEMENT_SPEED)
             else:
                 scope.move(scope.x, 0)
@@ -307,15 +308,14 @@ def game_scene() -> None:
             # fire laser if still less than 75
             for shot_number in range(len(shots)):
                 if shots[shot_number].x < 0:
-                    shots[shot_number].move(ship.x, ship.y)
+                    shots[shot_number].move(scope.x, scope.y)
                     #sound.play(gun_sound)
-                    time.sleep(0.5)
                     #sound.play(shell_sound)
                     break
         
         # checks if laser is on screen, then moves it up by laser_speed
         for shot_number in range(len(shots)):
-            if shots[shot_number].x > 0:
+            if shots[shot_number].x >= 0:
                 time.sleep(0.50)
                 shots[shot_number].move(constants.OFF_SCREEN_X,
                                             constants.OFF_SCREEN_Y)
