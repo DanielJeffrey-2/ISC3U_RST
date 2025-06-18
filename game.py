@@ -199,7 +199,7 @@ def game_scene() -> None:
             if bugs[bug_number].x < 0:
                 bugs[bug_number].move(random.randint(0 + constants.SPRITE_SIZE,
                                         constants.SCREEN_X - constants.SPRITE_SIZE),
-                                        constants.OFF_BOTTOM_SCREEN)
+                                        100)
             
                 break
 
@@ -331,8 +331,9 @@ def game_scene() -> None:
                                                 bugs[bug_number].y - random.choice(constants.BUG_SPEED_LIST))
             
                 # if alien not on screen, move to offscreen location
-                if bugs[bug_number].y > constants.SCREEN_Y:
+                if bugs[bug_number].y < 0:
                     bugs[bug_number].move(constants.OFF_SCREEN_X,constants.OFF_SCREEN_Y)
+                    show_bug()
                     show_bug()
                     score -= 1
                     if score < 0:
@@ -377,7 +378,7 @@ def game_scene() -> None:
 
         
         # redraw sprites
-        game.render_sprites(bugs + shots + [scope])
+        game.render_sprites([scope] + shots + bugs)
         game.tick()
 
 def game_over_scene(final_score):
