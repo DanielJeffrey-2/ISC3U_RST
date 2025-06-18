@@ -63,13 +63,8 @@ def menu_scene() -> None:
     background.tile(5, 5, 14)
     background.tile(6, 5, 0)
     background.tile(7, 5, 0)  # blank white
-   
-    game = stage.Stage(ugame.display, constants.FPS)
-
-    game.layers = text + [background]
-
-    game.render_block()
     
+
     game = stage.Stage(ugame.display, constants.FPS)
     game.layers = text + [background]
     game.render_block()
@@ -88,6 +83,7 @@ def bug_hunt_menu_scene() -> None:
     """ This function is the second menu screen for bug hunt """
     
     image_bank_mt_background = stage.Bank.from_bmp16("mt_game_studio.bmp")
+    
 
     text = []
     text1 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
@@ -116,21 +112,26 @@ def bug_hunt_menu_scene() -> None:
     background = stage.Grid(image_bank_mt_background, constants.SCREEN_X,
                             constants.SCREEN_Y)
    
-    game = stage.Stage(ugame.display, constants.FPS)
-
-    game.layers = text + [background]
-
-    game.render_block()
+    image_bank_sprites = stage.Bank.from_bmp16("bug_hunt_sprites.bmp")
+    
+    scope = stage.Sprite(image_bank_sprites, 2, 72, 74)
+    bug = stage.Sprite(image_bank_sprites, 6, 72, 54)
     
     game = stage.Stage(ugame.display, constants.FPS)
-    game.layers = text + [background]
+    game.layers = text + [scope] + [bug] + [background]
     game.render_block()
+    
+    pew_sound = open("pew.wav", 'rb')
+    sound = ugame.audio
+    sound.stop()
+    sound.mute(False)
     
     while True:
         # get user input
         keys = ugame.buttons.get_pressed()
 
         if keys & ugame.K_SELECT != 0:
+            sound.play(pew_sound)
             game_scene()
             
         if keys & ugame.K_O != 0:
@@ -144,22 +145,23 @@ def credits() -> None:
     """this function prints the credits"""
 
     image_bank_mt_background = stage.Bank.from_bmp16("mt_game_studio.bmp")
-
+    background = stage.Grid(image_bank_mt_background, constants.SCREEN_X,
+                            constants.SCREEN_Y)
     text = []
     text1 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
     text1.move(5,10)
-    text1.text("Created by: D. Jeffrey")
+    text1.text("Created by: D.J")
     text.append(text1)
 
     text2 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
     text2.move(5,30)
-    text2.text("Created 08/25 for ICS3U RST")
+    text2.text("Created 08/25")
     text.append(text2)
     
     
     text3 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
     text3.move(5,50)
-    text3.text("Only shoot the purple bugs!")
+    text3.text("Shoot the bugs!")
     text.append(text3)
     
     text4 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
@@ -170,7 +172,7 @@ def credits() -> None:
     game = stage.Stage(ugame.display, constants.FPS)
     game.layers = text + [background]
     game.render_block()
-    
+
     while True:
         keys = ugame.buttons.get_pressed()
         
@@ -230,17 +232,15 @@ def game_scene() -> None:
     b_button = constants.button_state["button_up"]
     start_button = constants.button_state["button_up"]
     select_button = constants.button_state["button_up"]
-    
-    #sound
-    #gunshot_sound = open("gun-gunshot-01.wav", 'rb')
-    #shell_sound = open("gun-gunshot-01.wav", 'rb')
-    gun_sound = open("rifle.wav", 'rb')
+    boom_sound = open("boom.wav", 'rb')
+    pew_sound = open("pew.wav", 'rb')
+    gun_sound = open("crash.wav", 'rb')
     sound = ugame.audio
     sound.stop()
     sound.mute(False)
     
     # putting background on screen
-    background = stage.Grid(image_bank_background, constants.SCREEN_GRID_X, constants.SCREEN_GRID_Y)
+    background = stage.Grid(image_bank_sprites, constants.SCREEN_GRID_X, constants.SCREEN_GRID_Y)
     
     """ for x_location in range(constants.SCREEN_GRID_X):
         for y_location in range(constants.SCREEN_GRID_Y):
@@ -339,7 +339,7 @@ def game_scene() -> None:
         # update game logic
         if a_button == constants.button_state["button_just_pressed"]:
             shots[1].move(scope.x, scope.y)
-            sound.play(gun_sound)
+            sound.play(boom_sound)
 
                                             
         for bug_number in range(len(bugs)):
@@ -386,8 +386,6 @@ def game_scene() -> None:
                                         bugs[bug_number].x + 15, bugs[bug_number].y + 15):
                             bugs[bug_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
                             shots[shot_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
-                            sound.stop()
-                            #sound.play(boom_sound)
                             show_bug()
                             show_bug()
                             score += 1
@@ -408,7 +406,9 @@ def game_scene() -> None:
                             bombs[bomb_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
                             shots[shot_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
                             explosion.move(scope.x, scope.y)
-                            time.sleep(5)
+                            sound.stop()
+                            sound.play(gun_sound)
+                            time.sleep(2)
                             game_over_scene(score)
 
         # good bug collision
@@ -423,7 +423,7 @@ def game_scene() -> None:
                             good_bugs[bug_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
                             shots[shot_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
                             sound.stop()
-                            #sound.play(boom_sound)
+                            sound.play(pew_sound)
                             show_good_bug()
                             score -= 1
                             if score < 0:
