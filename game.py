@@ -198,8 +198,7 @@ def game_scene() -> None:
         for bug_number in range(len(bugs)):
             if bugs[bug_number].x < 0:
                 bugs[bug_number].move(random.randint(0 + constants.SPRITE_SIZE,
-                                        constants.SCREEN_X - constants.SPRITE_SIZE),
-                                        100)
+                                        constants.SCREEN_X - constants.SPRITE_SIZE), 100)
             
                 break
 
@@ -252,7 +251,7 @@ def game_scene() -> None:
 
     # create stage background, load layers
     game = stage.Stage(ugame.display, constants.FPS)
-    game.layers = [score_text] + bugs + shots + [scope] + [background]
+    game.layers = [score_text] + shots + [scope] + bugs + [background]
     game.render_block()
     
     while True:
@@ -281,37 +280,31 @@ def game_scene() -> None:
         
         if keys & ugame.K_RIGHT:
             if scope.x <= constants.SCREEN_X - constants.SPRITE_SIZE:
-                scope.move(scope.x + constants.SPRITE_MOVEMENT_SPEED, scope.y)
+                scope.move(scope.x + constants.SCOPE_SPEED, scope.y)
             else:
                 scope.move(constants.SCREEN_X - constants.SPRITE_SIZE, scope.y)
         
         if keys & ugame.K_LEFT:
             if scope.x >= 0: 
-                scope.move(scope.x - constants.SPRITE_MOVEMENT_SPEED, scope.y)
+                scope.move(scope.x - constants.SCOPE_SPEED, scope.y)
             else:
                 scope.move(0, scope.y)
                 
         if keys & ugame.K_UP:
             if scope.y > 0: 
-                scope.move(scope.x, scope.y - constants.SPRITE_MOVEMENT_SPEED)
+                scope.move(scope.x, scope.y - constants.SCOPE_SPEED)
             else:
                 scope.move(scope.x, 0)
             
         if keys & ugame.K_DOWN:
             if scope.y < constants.SCREEN_Y - constants.SPRITE_SIZE:
-                scope.move(scope.x, scope.y + constants.SPRITE_MOVEMENT_SPEED)
+                scope.move(scope.x, scope.y + constants.SCOPE_SPEED)
             else:
                 scope.move(scope.x, constants.SCREEN_Y - constants.SPRITE_SIZE)
         
         # update game logic
         if a_button == constants.button_state["button_just_pressed"]:
-            # fire laser if still less than 75
-            for shot_number in range(len(shots)):
-                if shots[shot_number].x < 0:
-                    shots[shot_number].move(scope.x, scope.y)
-                    #sound.play(gun_sound)
-                    #sound.play(shell_sound)
-                    break
+            shots[shot_number].move(scope.x, scope.y)
         
         # checks if laser is on screen, then moves it up by laser_speed
         for shot_number in range(len(shots)):
@@ -322,14 +315,10 @@ def game_scene() -> None:
                                             
                                             
         for bug_number in range(len(bugs)):
-            if bugs[bug_number].x > 0:
-                if bugs[bug_number].x > 80:
-                    bugs[bug_number].move(bugs[bug_number].x - random.choice(constants.BUG_SPEED_LIST),
-                                        bugs[bug_number].y - random.choice(constants.BUG_SPEED_LIST))
-                else:
-                    bugs[bug_number].move(bugs[bug_number].x + random.choice(constants.BUG_SPEED_LIST),
-                                                bugs[bug_number].y - random.choice(constants.BUG_SPEED_LIST))
-            
+                bugs[bug_number].move(bugs[bug_number].x - random.choice(constants.HORIZONTAL_SPEED_LIST),
+                                        bugs[bug_number].y - random.choice(constants.VERICAL_SPEED_LIST))
+                                        
+
                 # if alien not on screen, move to offscreen location
                 if bugs[bug_number].y < 0:
                     bugs[bug_number].move(constants.OFF_SCREEN_X,constants.OFF_SCREEN_Y)
@@ -378,7 +367,7 @@ def game_scene() -> None:
 
         
         # redraw sprites
-        game.render_sprites([scope] + shots + bugs)
+        game.render_sprites(shots + [scope] +  bugs)
         game.tick()
 
 def game_over_scene(final_score):
