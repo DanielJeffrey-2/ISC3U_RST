@@ -140,7 +140,32 @@ def bug_hunt_menu_scene() -> None:
         game.tick()
 
 
-"""def credits
+def credits
+    """ this function prints the credits """
+
+    image_bank_mt_background = stage.Bank.from_bmp16("mt_game_studio.bmp")
+
+    text = []
+    text1 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
+    text1.move(5,10)
+    text1.text("Created by: D. Jeffrey")
+    text.append(text1)
+
+    text2 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
+    text2.move(5,30)
+    text2.text("Created 08/25 for ICS3U RST")
+    text.append(text2)
+    
+    
+    text3 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
+    text3.move(5,50)
+    text3.text("Only shoot the purple bugs!")
+    text.append(text3)
+    
+    text4 = stage.Text(width=29, height=12, font=None, palette=constants.WHITE_BLACK_PALETTE, buffer=None)
+    text4.move(5,90)
+    text4.text("PRESS SELECT")
+    text.append(text4)
     
     game = stage.Stage(ugame.display, constants.FPS)
     game.layers = text + [background]
@@ -154,9 +179,6 @@ def bug_hunt_menu_scene() -> None:
 
 
         game.tick()
-"""
-
-
 
 def game_scene() -> None:
     """ This function is the main game game_scene """
@@ -269,13 +291,16 @@ def game_scene() -> None:
                 scope.move(0, scope.y)
                 
         if keys & ugame.K_UP:
-            if scope.x >= 0: 
+            if scope.x > 0: 
                 scope.move(scope.x, scope.y - constants.SPRITE_MOVEMENT_SPEED)
             else:
-                scope.move(scope.x, constants.SCREEN_Y - constants.SPRITE_SIZE)
+                scope.move(scope.x, 0)
             
         if keys & ugame.K_DOWN:
-            pass
+            if scope.y < constants.SCREEN_Y - constants.SPRITE_SIZE:
+                scope.move(scope.x, scope.y + constants.SPRITE_MOVEMENT_SPEED)
+            else:
+                scope.move(scope.x, constants.SCREEN_Y - constants.SPRITE_SIZE)
         
         # update game logic
         if a_button == constants.button_state["button_just_pressed"]:
@@ -300,10 +325,10 @@ def game_scene() -> None:
             if bugs[bug_number].x > 0:
                 if bugs[bug_number].x > 80:
                     bugs[bug_number].move(bugs[bug_number].x - random.choice(constants.BUG_SPEED_LIST),
-                                        bugs[bug_number].y + random.choice(constants.BUG_SPEED_LIST))
+                                        bugs[bug_number].y - random.choice(constants.BUG_SPEED_LIST))
                 else:
                     bugs[bug_number].move(bugs[bug_number].x + random.choice(constants.BUG_SPEED_LIST),
-                                                bugs[bug_number].y + random.choice(constants.BUG_SPEED_LIST))
+                                                bugs[bug_number].y - random.choice(constants.BUG_SPEED_LIST))
             
                 # if alien not on screen, move to offscreen location
                 if bugs[bug_number].y > constants.SCREEN_Y:
@@ -352,7 +377,7 @@ def game_scene() -> None:
 
         
         # redraw sprites
-        game.render_sprites(bugs + shots + [cursor])
+        game.render_sprites(bugs + shots + [scope])
         game.tick()
 
 def game_over_scene(final_score):
