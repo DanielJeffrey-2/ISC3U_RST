@@ -194,10 +194,19 @@ def game_scene() -> None:
     
 
     def show_bug():
-        """ This function places an alien on the screen """
+        """ This function places an bug on the screen """
         for bug_number in range(len(bugs)):
             if bugs[bug_number].x < 0:
                 bugs[bug_number].move(random.randint(0 + constants.SPRITE_SIZE,
+                                        constants.SCREEN_X - constants.SPRITE_SIZE), 100)
+            
+                break
+            
+    def show_good_bug():
+        """ This function places an alien on the screen """
+        for bug_number in range(len(good_bugs)):
+            if good_bugs[bug_number].x < 0:
+                good_bugs[bug_number].move(random.randint(0 + constants.SPRITE_SIZE,
                                         constants.SCREEN_X - constants.SPRITE_SIZE), 100)
             
                 break
@@ -225,7 +234,7 @@ def game_scene() -> None:
     #sound
     #gunshot_sound = open("gun-gunshot-01.wav", 'rb')
     #shell_sound = open("gun-gunshot-01.wav", 'rb')
-    crash_sound = open("crash.wav", 'rb')
+    gun_sound = open("rifle.wav", 'rb')
     sound = ugame.audio
     sound.stop()
     sound.mute(False)
@@ -260,6 +269,12 @@ def game_scene() -> None:
     
     show_bomb()
     
+    good_bugs = []
+    for bug_number in range(1):
+        a_single_bug = stage.Sprite(image_bank_sprites, 7,
+                                    constants.OFF_SCREEN_X,
+                                    constants.OFF_SCREEN_Y)
+        good_bugs.append(a_single_bug)
     
     shots = []
     for shot_number in range(constants.TOTAL_NUMBER_OF_SHOTS):
@@ -270,7 +285,7 @@ def game_scene() -> None:
 
     # create stage background, load layers
     game = stage.Stage(ugame.display, constants.FPS)
-    game.layers = [score_text] + shots + [scope] + bombs + bugs + [background]
+    game.layers = [explosion] + [score_text] + shots + [scope] + bombs + good_bugs + bugs + [background]
     game.render_block()
     
     while True:
@@ -324,18 +339,12 @@ def game_scene() -> None:
         # update game logic
         if a_button == constants.button_state["button_just_pressed"]:
             shots[1].move(scope.x, scope.y)
-        
-        # checks if laser is on screen, then moves it up by laser_spee
+            sound.play(gun_sound)
 
                                             
         for bug_number in range(len(bugs)):
                 bugs[bug_number].move(bugs[bug_number].x - random.choice(constants.HORIZONTAL_SPEED_LIST),
                                         bugs[bug_number].y - random.choice(constants.VERICAL_SPEED_LIST))
-        
-        for bomb_number in range(len(bombs)):
-                bombs[bomb_number].move(bombs[bomb_number].x - random.choice(constants.HORIZONTAL_SPEED_LIST),
-                                        bombs[bomb_number].y - random.choice(constants.VERICAL_SPEED_LIST))
-                                        
 
                 # if alien not on screen, move to offscreen location
                 if bugs[bug_number].y < 0:
@@ -349,7 +358,24 @@ def game_scene() -> None:
                     score_text.cursor(0,0)
                     score_text.move(1,1)
                     score_text.text("Score: {0}".format(score))
+
+        for bug_number in range(len(good_bugs)):
+                good_bugs[bug_number].move(good_bugs[bug_number].x - random.choice(constants.HORIZONTAL_SPEED_LIST),
+                                        good_bugs[bug_number].y - random.choice(constants.VERICAL_SPEED_LIST))
+
+                # if bug not on screen, move to offscreen location
+                if good_bugs[bug_number].y < 0:
+                    good_bugs[bug_number].move(constants.OFF_SCREEN_X,constants.OFF_SCREEN_Y)
+                    show_good_bug()
+
+        for bomb_number in range(len(bombs)):
+            bombs[bomb_number].move(bombs[bomb_number].x - random.choice(constants.HORIZONTAL_SPEED_LIST),
+                                        bombs[bomb_number].y - random.choice(constants.VERICAL_SPEED_LIST))
+            if bombs[bomb_number].y < 0:
+                bombs[bomb_number].move(constants.OFF_SCREEN_X,constants.OFF_SCREEN_Y)
+                show_bomb()
         
+        # bug collision
         for shot_number in range(len(shots)):
             if shots[shot_number].x > 0:
                 for bug_number in range(len(bugs)):
@@ -370,6 +396,7 @@ def game_scene() -> None:
                             score_text.move(1,1)
                             score_text.text("Score: {0}".format(score))
 
+        # bomb collision
         for shot_number in range(len(shots)):
             if shots[shot_number].x > 0:
                 for bomb_number in range(len(bombs)):
@@ -381,12 +408,34 @@ def game_scene() -> None:
                             bombs[bomb_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
                             shots[shot_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
                             explosion.move(scope.x, scope.y)
-                            time.sleep(1)
+                            time.sleep(5)
                             game_over_scene(score)
+
+        # good bug collision
+        for shot_number in range(len(shots)):
+            if shots[shot_number].x > 0:
+                for bug_number in range(len(good_bugs)):
+                    if good_bugs[bug_number].x > 0:
+                        if stage.collide(shots[shot_number].x, shots[shot_number].y,
+                                        shots[shot_number].x + 16, shots[shot_number].y + 16,
+                                        good_bugs[bug_number].x + 1, good_bugs[bug_number].y,
+                                        good_bugs[bug_number].x + 15, good_bugs[bug_number].y + 15):
+                            good_bugs[bug_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
+                            shots[shot_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
+                            sound.stop()
+                            #sound.play(boom_sound)
+                            show_good_bug()
+                            score -= 1
+                            if score < 0:
+                                score = 0
+                            score_text.clear()
+                            score_text.cursor(0,0)
+                            score_text.move(1,1)
+                            score_text.text("Score: {0}".format(score))
                             
         
         # redraw sprites
-        game.render_sprites([explosion] + shots + [scope] + bombs + bugs)
+        game.render_sprites([explosion] + shots + [scope] + bombs + bugs + good_bugs)
         game.tick()
 
 def game_over_scene(final_score):
